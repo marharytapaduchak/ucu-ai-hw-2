@@ -5,8 +5,6 @@ course: Artificial Intelligence · UCU
 date: 2026-11-16
 ---
 
-# UCU AI Homework Report Template
-
 ## 1. Methodology and motivation
 
 ### 1.1 Data preparation
@@ -42,9 +40,9 @@ I evaluated four required object-detection architectures:
 | Detection family | Model | Motivation | Notebooks |
 |---|---|---|---|
 | Two-stage, anchor-based | Faster R-CNN ResNet50-FPN | Region proposals and FPN features for multi-scale detection | [02](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/02_Faster_RCNN_Baseline.ipynb), [06](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/06_Faster_RCNN_Tuning.ipynb) |
-| One-stage, anchor-based | RetinaNet ResNet50-FPN v2 | Focal Loss for class imbalance and dense detection | [03](notebooks/03_RetinaNet_3Fold_Baseline.ipynb), [07](notebooks/07_RetinaNet_Tuning.ipynb) |
-| One-stage, anchor-free | YOLO11 | Efficient inference and dense object localization | [01b](notebooks/01b_YOLO_Baseline.ipynb), [05](notebooks/05_YOLO_Tuning.ipynb) |
-| Query-based | RT-DETR-L | Transformer-based detection with bipartite matching | [04](notebooks/04_RTDETR_Baseline.ipynb), [08](notebooks/08_RTDETR_Tuning_Kaggle.ipynb) |
+| One-stage, anchor-based | RetinaNet ResNet50-FPN v2 | Focal Loss for class imbalance and dense detection | [03](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/03_RetinaNet_3Fold_Baseline.ipynb), [07](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/07_RetinaNet_Tuning.ipynb) |
+| One-stage, anchor-free | YOLO11 | Efficient inference and dense object localization | [01b](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/01b_YOLO_Baseline.ipynb), [05](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/05_YOLO_Tuning.ipynb) |
+| Query-based | RT-DETR-L | Transformer-based detection with bipartite matching | [04](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/04_RTDETR_Baseline.ipynb), [08](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/08_RTDETR_Tuning_Kaggle.ipynb) |
 
 The initial benchmarks used COCO-pretrained weights, six training epochs, batch size 2, and consistent video-level splits. I first tested individual changes on fold 0 and then evaluated promising configurations across all three folds.
 
@@ -63,10 +61,12 @@ All four required model families were evaluated using three-fold video-level cro
 
 | Model | Baseline mAP | Best configuration | Tuned mAP |
 |---|---:|---|---:|
-| YOLO11 | 0.1061 | YOLO11s, 960 px, AdamW, LR 5e-4 | **0.1744** |
+| YOLO11 | 0.1061\* | YOLO11s, 960 px, AdamW, LR 5e-4 | **0.1744** |
 | RetinaNet | 0.1498 | 768 px, SGD, LR 0.002 | 0.1699 |
 | Faster R-CNN v1 | 0.1456 | 768 px, SGD, LR 0.002 | 0.1671 |
 | RT-DETR-L | 0.1558 | Original LR 1e-4 | 0.1558 |
+
+\* The YOLO11 baseline is YOLO11n at 640 px, scored with the Ultralytics built-in evaluator rather than the shared COCOeval, so it is not directly comparable to the other values. All other numbers in this table, including the tuned YOLO11s result, use the same COCOeval on the same folds.
 
 YOLO11s achieved the strongest cross-validation result. Increasing model capacity and resolution substantially improved its performance. Larger input sizes also improved RetinaNet and Faster R-CNN, consistent with the large proportion of small objects identified during EDA.
 
@@ -80,7 +80,7 @@ Several unsuccessful experiments helped narrow the search:
 | RT-DETR, LR 5e-5 (fold 0) | 0.1412 | 0.1596 baseline fold 0 |
 | YOLO11s, SGD 0.01 (fold 0) | 0.1632 | 0.1682 with AdamW |
 
-These results suggested that increasing image resolution was more reliable than changing optimizers or loss parameters. The comparison code and complete experiments are available in Notebooks 05–10.
+These results suggested that increasing image resolution was more reliable than changing optimizers or loss parameters. The comparison code and complete experiments are available in [Notebooks 05–10](https://github.com/marharytapaduchak/ucu-ai-hw-2/tree/main/notebooks).
 
 ### 2.2 Incremental leaderboard improvements
 
@@ -88,15 +88,15 @@ The following experiments progressively improved the submitted predictions. Hold
 
 | Experiment | Holdout mAP | Public LB | Notebook |
 |---|---:|---:|---|
-| Initial YOLO submission | — | 0.1761 | [01b](notebooks/01b_YOLO_Baseline.ipynb) |
-| YOLO11s, 18 epochs | 0.1843 | 0.1873 | [09](notebooks/09_YOLO_Leaderboard_Improvement.ipynb) |
-| RT-DETR + RetinaNet CV ensemble | 0.2029 | 0.2078 | [14](notebooks/14_RTDETR_RetinaNet_Ensemble_Kaggle.ipynb) |
-| RT-DETR + final RetinaNet | 0.2091 | 0.2120 | [15b](notebooks/15b_Stronger_Multi_Model_Ensemble_Colab.ipynb) |
-| Multi-scale ensemble v1 | 0.2627 | 0.2420 | [16](notebooks/16_Ensemble_v1_MultiScale_WBF.ipynb) |
+| Initial YOLO submission | — | 0.1761 | [01b](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/01b_YOLO_Baseline.ipynb) |
+| YOLO11s, 18 epochs | 0.1843 | 0.1873 | [09](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/09_YOLO_Leaderboard_Improvement.ipynb) |
+| RT-DETR + RetinaNet CV ensemble | 0.2029 | 0.2078 | [14](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/14_RTDETR_RetinaNet_Ensemble_Kaggle.ipynb) |
+| RT-DETR + final RetinaNet | 0.2091 | 0.2120 | [15b](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/15b_Stronger_Multi_Model_Ensemble_Colab.ipynb) |
+| Multi-scale ensemble v1 | 0.2627 | 0.2420 | [16](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/16_Ensemble_v1_MultiScale_WBF.ipynb) |
 | Ensemble v2 with Faster R-CNN v2 | 0.2930 | 0.2900 | [17–18](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/18_Ensemble_v2_with_FasterRCNNv2_FCOS.ipynb) |
 | **Final ensemble v3** | **0.2962** | **0.2941** | [19](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) |
 
-An attempted final YOLO11s retraining run failed before training because the pretrained checkpoint download returned HTTP 504 ([Notebook 11](notebooks/11_Final_YOLO11s_Training_Kaggle_FAILED.ipynb)). This motivated exploring alternative available checkpoints and model ensembles rather than relying on one architecture.
+An attempted final YOLO11s retraining run failed before training because the pretrained checkpoint download returned HTTP 504 ([Notebook 11](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/11_Final_YOLO11s_Training_Kaggle_FAILED.ipynb)). This motivated exploring alternative available checkpoints and model ensembles rather than relying on one architecture.
 
 ### 2.3 Resolution, architecture, and fusion experiments
 
@@ -166,10 +166,12 @@ Run the following notebooks in order:
 
 | Step | Notebook | Purpose |
 |---|---|---|
-| 1 | [05 — YOLO Tuning](notebooks/05_YOLO_Tuning.ipynb) | Train three YOLO11s folds (960 px, AdamW, LR 5e-4, 6 epochs, batch 2); save `yolo_tuning_results.zip`. |
+| 1 | [05 — YOLO Tuning](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/05_YOLO_Tuning.ipynb) | Train three YOLO11s folds (960 px, AdamW, LR 5e-4, 6 epochs, batch 2); save `yolo_tuning_results.zip`. |
 | 2 | [06 — Faster R-CNN Tuning](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/06_Faster_RCNN_Tuning.ipynb) | Train three Faster R-CNN v1 folds (768 px, SGD, LR 0.002, 6 epochs, batch 2); save checkpoints under `faster_rcnn_tuning/`. |
-| 3 | [17 — Faster R-CNN v2 and FCOS](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb) | Train high-resolution detectors on all 56 videos (every fourth frame, batch 2, up to 8 epochs, seed 42). Use Kaggle T4 ×2 and download `hr_models_bundle.zip`. |
-| 4 | [19 — Final Ensemble v3](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) | Load checkpoints, generate or reuse cached predictions, apply multi-scale inference and WBF, and export the final submission. |
+| 3 | [08 — RT-DETR Tuning](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/08_RTDETR_Tuning_Kaggle.ipynb) | Train three RT-DETR-L folds (640 px, 6 epochs, batch 2); save `rtdetr_tuning_essentials.zip`. Needed by the 15b reference check in Notebook 19. |
+| 4 | [12 — Final RetinaNet](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/12_Final_RetinaNet_Training_Colab.ipynb) (or [07](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/07_RetinaNet_Tuning.ipynb)) | Train RetinaNet (768 px, SGD, LR 0.002, 6 epochs, batch 2); saves `retinanet_final_6ep/` (07: `retinanet_v2_tuning/`). Needed by the 15b reference check in Notebook 19. |
+| 5 | [17 — Faster R-CNN v2 and FCOS](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb) | Train high-resolution detectors on all 56 videos (every fourth frame, batch 2, up to 8 epochs, seed 42). Use Kaggle T4 ×2 and download `hr_models_bundle.zip`. |
+| 6 | [19 — Final Ensemble v3](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) | Load checkpoints, generate or reuse cached predictions, apply multi-scale inference and WBF, and export the final submission. |
 
 Upload the model archives to `MyDrive/UCU_AI_HW2/` before running Notebook 19. Previously generated predictions can be reused from `ensemble_cache/`, with checkpoint fingerprints preventing mismatched cache reuse.
 
@@ -178,5 +180,3 @@ The final submitted predictions are generated at:
 `MyDrive/UCU_AI_HW2/ensemble16_v3/submission_16b_final.csv`
 
 The CSV contains one row per test image, with `image_id` and `PredictionString` columns. Each detection is encoded as `class confidence x y width height`, using zero-based class IDs.
-
-
