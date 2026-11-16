@@ -13,7 +13,7 @@ date: 2026-11-16
 
 The task is to detect eight object classes in VisDrone video frames: person, bicycle, car, van, truck, tricycle, bus, and motor. The dataset contains 56 training videos, 7 independent validation videos, and 48 test videos (3,811 frames).
 
-Exploratory data analysis ([Notebook 01a](notebooks/01a_EDA.ipynb)):
+Exploratory data analysis ([Notebook 01a](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/01a_EDA.ipynb)):
 
 - **Class imbalance:** Cars account for approximately 537,000 training annotations, compared with only 9,900 for buses.
 - **Small objects:** Approximately 24% of objects are smaller than 32 × 32 pixels. The median bounding box is 44 × 49 pixels.
@@ -41,14 +41,14 @@ I evaluated four required object-detection architectures:
 
 | Detection family | Model | Motivation | Notebooks |
 |---|---|---|---|
-| Two-stage, anchor-based | Faster R-CNN ResNet50-FPN | Region proposals and FPN features for multi-scale detection | [02](notebooks/02_Faster_RCNN_Baseline.ipynb), [06](notebooks/06_Faster_RCNN_Tuning.ipynb) |
+| Two-stage, anchor-based | Faster R-CNN ResNet50-FPN | Region proposals and FPN features for multi-scale detection | [02](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/02_Faster_RCNN_Baseline.ipynb), [06](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/06_Faster_RCNN_Tuning.ipynb) |
 | One-stage, anchor-based | RetinaNet ResNet50-FPN v2 | Focal Loss for class imbalance and dense detection | [03](notebooks/03_RetinaNet_3Fold_Baseline.ipynb), [07](notebooks/07_RetinaNet_Tuning.ipynb) |
 | One-stage, anchor-free | YOLO11 | Efficient inference and dense object localization | [01b](notebooks/01b_YOLO_Baseline.ipynb), [05](notebooks/05_YOLO_Tuning.ipynb) |
 | Query-based | RT-DETR-L | Transformer-based detection with bipartite matching | [04](notebooks/04_RTDETR_Baseline.ipynb), [08](notebooks/08_RTDETR_Tuning_Kaggle.ipynb) |
 
 The initial benchmarks used COCO-pretrained weights, six training epochs, batch size 2, and consistent video-level splits. I first tested individual changes on fold 0 and then evaluated promising configurations across all three folds.
 
-The experiments investigated input resolution, optimizer choice, learning rate, and RetinaNet's Focal Loss gamma. Later experiments introduced **Faster R-CNN v2 and FCOS** ([Notebook 17](notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb)), using multi-scale training, smaller anchors, and improved ignored-region handling.
+The experiments investigated input resolution, optimizer choice, learning rate, and RetinaNet's Focal Loss gamma. Later experiments introduced **Faster R-CNN v2 and FCOS** ([Notebook 17](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb)), using multi-scale training, smaller anchors, and improved ignored-region handling.
 
 For the final pipeline, I investigated multi-scale inference, horizontal-flip test-time augmentation, and **Weighted Boxes Fusion (WBF)**. Candidate model families were selected according to holdout mAP improvements, followed by tuning of family weights and fusion parameters.
 
@@ -80,7 +80,7 @@ Several unsuccessful experiments helped narrow the search:
 | RT-DETR, LR 5e-5 (fold 0) | 0.1412 | 0.1596 baseline fold 0 |
 | YOLO11s, SGD 0.01 (fold 0) | 0.1632 | 0.1682 with AdamW |
 
-These results suggested that increasing image resolution was more reliable than changing optimizers or loss parameters. The comparison code and complete experiments are available in [Notebooks 05–10](notebooks/).
+These results suggested that increasing image resolution was more reliable than changing optimizers or loss parameters. The comparison code and complete experiments are available in Notebooks 05–10.
 
 ### 2.2 Incremental leaderboard improvements
 
@@ -93,8 +93,8 @@ The following experiments progressively improved the submitted predictions. Hold
 | RT-DETR + RetinaNet CV ensemble | 0.2029 | 0.2078 | [14](notebooks/14_RTDETR_RetinaNet_Ensemble_Kaggle.ipynb) |
 | RT-DETR + final RetinaNet | 0.2091 | 0.2120 | [15b](notebooks/15b_Stronger_Multi_Model_Ensemble_Colab.ipynb) |
 | Multi-scale ensemble v1 | 0.2627 | 0.2420 | [16](notebooks/16_Ensemble_v1_MultiScale_WBF.ipynb) |
-| Ensemble v2 with Faster R-CNN v2 | 0.2930 | 0.2900 | [17–18](notebooks/18_Ensemble_v2_with_FasterRCNNv2_FCOS.ipynb) |
-| **Final ensemble v3** | **0.2962** | **0.2941** | [19](notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) |
+| Ensemble v2 with Faster R-CNN v2 | 0.2930 | 0.2900 | [17–18](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/18_Ensemble_v2_with_FasterRCNNv2_FCOS.ipynb) |
+| **Final ensemble v3** | **0.2962** | **0.2941** | [19](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) |
 
 An attempted final YOLO11s retraining run failed before training because the pretrained checkpoint download returned HTTP 504 ([Notebook 11](notebooks/11_Final_YOLO11s_Training_Kaggle_FAILED.ipynb)). This motivated exploring alternative available checkpoints and model ensembles rather than relying on one architecture.
 
@@ -102,7 +102,7 @@ An attempted final YOLO11s retraining run failed before training because the pre
 
 Testing larger inference resolutions without retraining improved YOLO11s from 0.1842 at 960 px to **0.1923 at 1280 px with horizontal flip**. RetinaNet improved from 0.1756 at 768 px to 0.1821 at 960 px. However, larger resolutions were not universally beneficial: YOLO11s dropped to 0.1835 at 1536 px, while RT-DETR decreased from 0.1537 at 640 px to 0.1318 at 960 px.
 
-A stronger Faster R-CNN v2 was subsequently trained with multi-scale augmentation, smaller anchors, and masked ignored regions ([Notebook 17](notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb)). It achieved **0.2542 holdout mAP**, compared with 0.1807 for the best earlier Faster R-CNN v1 fold. FCOS achieved 0.1972. Since several training settings changed simultaneously, the Faster R-CNN improvement cannot be attributed to architecture alone.
+A stronger Faster R-CNN v2 was subsequently trained with multi-scale augmentation, smaller anchors, and masked ignored regions ([Notebook 17](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb)). It achieved **0.2542 holdout mAP**, compared with 0.1807 for the best earlier Faster R-CNN v1 fold. FCOS achieved 0.1972. Since several training settings changed simultaneously, the Faster R-CNN improvement cannot be attributed to architecture alone.
 
 The final ensemble was built incrementally using Weighted Boxes Fusion:
 
@@ -138,7 +138,7 @@ The private leaderboard scores were approximately 0.04 lower than public scores 
 
 ### 3.1 Selected Model
 
-The final solution is **Ensemble v3** ([Notebook 19](notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb)), combining nine prediction sources through class-aware Weighted Boxes Fusion (WBF).
+The final solution is **Ensemble v3** ([Notebook 19](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb)), combining nine prediction sources through class-aware Weighted Boxes Fusion (WBF).
 
 | Model / inference configuration | Ensemble weight |
 |---|---:|
@@ -167,9 +167,9 @@ Run the following notebooks in order:
 | Step | Notebook | Purpose |
 |---|---|---|
 | 1 | [05 — YOLO Tuning](notebooks/05_YOLO_Tuning.ipynb) | Train three YOLO11s folds (960 px, AdamW, LR 5e-4, 6 epochs, batch 2); save `yolo_tuning_results.zip`. |
-| 2 | [06 — Faster R-CNN Tuning](notebooks/06_Faster_RCNN_Tuning.ipynb) | Train three Faster R-CNN v1 folds (768 px, SGD, LR 0.002, 6 epochs, batch 2); save checkpoints under `faster_rcnn_tuning/`. |
-| 3 | [17 — Faster R-CNN v2 and FCOS](notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb) | Train high-resolution detectors on all 56 videos (every fourth frame, batch 2, up to 8 epochs, seed 42). Use Kaggle T4 ×2 and download `hr_models_bundle.zip`. |
-| 4 | [19 — Final Ensemble v3](notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) | Load checkpoints, generate or reuse cached predictions, apply multi-scale inference and WBF, and export the final submission. |
+| 2 | [06 — Faster R-CNN Tuning](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/06_Faster_RCNN_Tuning.ipynb) | Train three Faster R-CNN v1 folds (768 px, SGD, LR 0.002, 6 epochs, batch 2); save checkpoints under `faster_rcnn_tuning/`. |
+| 3 | [17 — Faster R-CNN v2 and FCOS](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/17_FasterRCNNv2_FCOS_Training_Kaggle.ipynb) | Train high-resolution detectors on all 56 videos (every fourth frame, batch 2, up to 8 epochs, seed 42). Use Kaggle T4 ×2 and download `hr_models_bundle.zip`. |
+| 4 | [19 — Final Ensemble v3](https://github.com/marharytapaduchak/ucu-ai-hw-2/blob/main/notebooks/19_Final_Ensemble_v3_FasterRCNNv2_MultiScale.ipynb) | Load checkpoints, generate or reuse cached predictions, apply multi-scale inference and WBF, and export the final submission. |
 
 Upload the model archives to `MyDrive/UCU_AI_HW2/` before running Notebook 19. Previously generated predictions can be reused from `ensemble_cache/`, with checkpoint fingerprints preventing mismatched cache reuse.
 
